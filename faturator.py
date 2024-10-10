@@ -14,14 +14,20 @@ if inserir_arquivo is not None:
 
 
 
-valores = [ 
-
-]
+valores = {
+    'Static Maps': [13.20, 10.56, 7.92],
+    'Dynamic Maps': [46.20, 36.96, 27.72],
+    'Directions' : [33.00, 26.40, 19.80],
+    'Directions Advanced' : [66.00, 52.80, 39.60],
+    'Geocoding': [33.00, 26.40, 19.80]
+}
 
 
 parametros = [
     100000, 500000, 1000000
 ]
+
+
 
 # static maps = preco1 : 13.20, preco2 : 10.56, preco3: 7.92
 # dynamic maps = preco1 : 46.20, preco2 : 36.96, preco3: 27.72
@@ -49,35 +55,21 @@ if inserir_arquivo is not None:
 
 
     colunas_requisitadas['Custo não arredondado (R$)'] = (
-        colunas_requisitadas['Custo não arredondado (R$)'].str.replace(',','.', regex = True))
+        colunas_requisitadas['Custo não arredondado (R$)'].str.replace(',','.', regex = True)
+    )
     
     colunas_requisitadas['Quantidade de uso'] = (
-        colunas_requisitadas['Quantidade de uso'].str.replace('.','',regex=False).replace('nan','0',regex=True)
+        colunas_requisitadas['Quantidade de uso'].str.replace('.','',regex=False).replace('nan','0', regex=True).astype(int)
     )
-
 
     colunas_requisitadas['Custo não arredondado (R$)'] = colunas_requisitadas['Custo não arredondado (R$)'].str.replace('\xa0','',regex=False)
 
     colunas_requisitadas['Custo não arredondado (R$)'] = colunas_requisitadas['Custo não arredondado (R$)'].astype(float)
 
-    
-    colunas_requisitadas['Desconto'] = colunas_requisitadas['Custo não arredondado (R$)'].where(colunas_requisitadas['Custo não arredondado (R$)'] <  0, other=0)
-   
-
+    colunas_requisitadas['Desconto'] = (
+        colunas_requisitadas['Custo não arredondado (R$)'].where(colunas_requisitadas['Custo não arredondado (R$)'] <  0, other=0)
+    )
     colunas_requisitadas['Desconto']=colunas_requisitadas['Desconto'].astype(str).str.replace(',','', regex= False).astype(float)
-
-
-    colunas_requisitadas['Quantidade de uso'] = (
-        colunas_requisitadas['Quantidade de uso'].str.replace(',','',regex=False)).astype(int)
- 
-
-
-
-
-
-
-
-
 
 
 
@@ -90,11 +82,4 @@ if inserir_arquivo is not None:
 else:
     'Adicione um arquivo CSV'
 
-
-# colunas_requisitadas['Descontos'] = colunas_requisitadas['Custo não arredondado (R$)'].astype(float)
-
-
-# st.write(colunas_requisitadas)
-
-# desconto = colunas_requisitadas[colunas_requisitadas['Custo não arredondado (R$)'] < 0]
 
