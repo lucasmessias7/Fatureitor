@@ -13,21 +13,23 @@ if inserir_arquivo is not None:
     dados = pd.read_csv(inserir_arquivo, delimiter=',')
 
 
-
+# preço por consumo
 valores = {
     'Itens' : ['Static Maps','Dynamic Maps', 'Directions','Directions Advanced', 'Geocoding'],
     'valor1' : [13.20, 46.20, 33.00, 66.00, 33.00],
     'valor2' : [10.56, 36.96, 26.40, 52.80, 26.40 ],
     'valor3' : [7.92, 27.72, 19.80, 39.60, 19.80],
 }
-
 valores = pd.DataFrame(valores)
 
+#paramentro de quantida de uso
 quantidade_uso1 = 100000
 quantidade_uso2= 500000
 quantidade_uso3 = 1000000
 
-
+#valor de reajuste
+reajuste_2023 = 1.116886
+reajuste_2022 = 1.039641
 
 
 def calcula_valor(quantidade,valor1,valor2,valor3,quantidade_uso1,quantidade_uso2,quantidade_uso3):
@@ -46,7 +48,7 @@ colunas_requisitadas = dados[['Descrição da SKU', 'Quantidade de uso', 'Custo 
 colunas_requisitadas = colunas_requisitadas.drop(index=11)
 
 
-st.text('TABELA INICIAL')
+
 
 if inserir_arquivo is not None:
 
@@ -75,21 +77,20 @@ if inserir_arquivo is not None:
 
     colunas_requisitadas=colunas_requisitadas.drop(columns='Custo não arredondado (R$)', index=6)
 
-    st.write(colunas_requisitadas)
-
     colunas_requisitadas['valor calculado'] = colunas_requisitadas.apply(lambda row: calcula_valor(
     row['Quantidade de uso'],
     valores.loc[valores['Itens'] == row['Descrição da SKU'], 'valor1'].values,
     valores.loc[valores['Itens'] == row['Descrição da SKU'], 'valor2'].values,
     valores.loc[valores['Itens'] == row['Descrição da SKU'], 'valor3'].values,
     quantidade_uso1,quantidade_uso2,quantidade_uso3), axis=1)
-    
-    colunas_requisitadas['valor calculado'] = colunas_requisitadas['valor calculado']
-    
-    
 
     st.text('TABELA ATUALIZADA')
     st.write(colunas_requisitadas)
+    
+    # desconto = colunas_requisitadas['Desconto']
+    # total = colunas_requisitadas['valor calculado'].sum()
+    # total_descontos= (total * reajuste_2022 * reajuste_2023)
+
     
 
 else:
